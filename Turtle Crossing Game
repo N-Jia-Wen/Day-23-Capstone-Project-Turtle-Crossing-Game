@@ -1,0 +1,38 @@
+import time
+from turtle import Screen
+from player import Player
+from car_manager import CarManager
+from scoreboard import Scoreboard
+FINISH_LINE_Y = 280
+
+player = Player()
+car_manager = CarManager()
+scoreboard = Scoreboard()
+
+# Setting up the screen
+screen = Screen()
+screen.setup(width=600, height=600)
+screen.title("Crossy Road!")
+screen.tracer(0)
+screen.listen()
+screen.onkeypress(fun=player.player_move, key="Up")
+
+
+game_running = True
+while game_running is True:
+    screen.update()
+    time.sleep(0.1)
+    car_manager.create_car()
+    car_manager.move_car()
+
+    if player.ycor() >= FINISH_LINE_Y:
+        player.return_start()
+        scoreboard.update_score()
+        car_manager.speed_up_car()
+
+    for car in car_manager.car_list:
+        if player.distance(car) < 20:
+            game_running = False
+
+scoreboard.game_over()
+screen.exitonclick()
